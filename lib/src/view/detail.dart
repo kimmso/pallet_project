@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:pallet_project/src/controller/detailcontroller.dart';
 import 'package:pallet_project/src/controller/likecontroller.dart';
@@ -17,16 +16,29 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   late Future<FeedDetail?> _feeddetailsFuture;
-  final DetailController detailController =
-      Get.put(DetailController(repository: DetailRepository()));
-  final LikeController likeController =
-      Get.put(LikeController(repository: LikeRepository()));
+  late DetailController detailController;
+  late LikeController likeController;
 
   @override
   void initState() {
     super.initState();
+    detailController =
+        Get.put(DetailController(repository: DetailRepository()));
+    likeController = Get.put(LikeController(repository: LikeRepository()));
     _feeddetailsFuture = detailController.detailfetchData(widget.post_no);
-    likeController.pluslikefetchData(widget.post_no);
+    _initializeLikeState();
+  }
+
+  Future<void> _initializeLikeState() async {
+    FeedDetail? feedDetail =
+        await detailController.detailfetchData(widget.post_no);
+    if (feedDetail != null) {
+      // 서버에서 받아온 데이터를 기반으로 초기 상태 설정
+      likeController.isLiked.value =
+          feedDetail.like!; // FeedDetail에 isLiked 속성이 있어야 합니다.
+      likeController.like_count.value =
+          feedDetail.like_count!; // FeedDetail에 like_count 속성이 있어야 합니다.
+    }
   }
 
   void _toggleLike() async {
@@ -141,10 +153,9 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _likeCount() {
     return Obx(() {
-      int like_count =
-          likeController.like_count.value; // likeCount 변수를 사용하여 좋아요 개수를 가져옵니다.
+      int like_count = likeController.like_count.value;
       return Text(
-        '$like_count', // 좋아요 개수 표시
+        '$like_count',
         style: TextStyle(fontSize: 16),
       );
     });

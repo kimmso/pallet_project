@@ -16,8 +16,6 @@ class DetailController extends GetxController {
       _feeddetails.value = feeddetail;
 
       return feeddetail;
-    } else {
-      print(222);
-    }
+    } else {}
   }
 }
