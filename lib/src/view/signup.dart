@@ -8,16 +8,15 @@ import 'package:pallet_project/src/widget/elevatedbutton.dart';
 import 'package:pallet_project/src/widget/textfield.dart';
 
 class SignUpPage extends GetView<UserController> {
-  String? authcode; // authcode를 상태로 저장
+  // State를 유지하기 위해 authcode를 final로 설정합니다.
+  final String? authcode;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
-  SignUpPage({super.key});
+  SignUpPage({super.key}) : authcode = null;
 
   @override
   Widget build(BuildContext context) {
-    final EmailController emailController =
-        Get.find(); // EmailController 인스턴스 가져오기
+    final EmailController emailController = Get.find();
     final TextEditingController authcodeController = TextEditingController();
 
     return Scaffold(
@@ -44,7 +43,7 @@ class SignUpPage extends GetView<UserController> {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            _signUpForm(emailController, authcodeController)
+            _signUpForm(emailController, authcodeController),
           ],
         ),
       ),
@@ -54,7 +53,7 @@ class SignUpPage extends GetView<UserController> {
   Widget _signUpForm(EmailController emailController,
       TextEditingController authcodeController) {
     return Form(
-      key: _formkey,
+      key: _formKey,
       child: Column(
         children: [
           CustomTextField(
@@ -72,8 +71,12 @@ class SignUpPage extends GetView<UserController> {
                 child: const Text('인증하기'),
                 onPressed: () async {
                   try {
-                    authcode = await emailController
+                    // 이메일 인증 코드 요청
+                    final receivedAuthcode = await emailController
                         .authFetchData(controller.signupId.text);
+
+                    // 인증 코드 저장
+                    controller.setAuthCode(receivedAuthcode);
 
                     Get.snackbar(
                       "인증메일 전송",
@@ -82,6 +85,8 @@ class SignUpPage extends GetView<UserController> {
                       backgroundColor: Color.fromARGB(255, 129, 132, 211),
                       colorText: Colors.white,
                     );
+                    // 이메일 인증 상태 업데이트
+                    controller.setEmailVerified(false);
                   } catch (e) {
                     Get.snackbar(
                       "오류",
@@ -102,29 +107,33 @@ class SignUpPage extends GetView<UserController> {
             suffixIcon: Padding(
               padding: EdgeInsets.all(6.0),
               child: TextButton(
-                  onPressed: () {
-                    final inputCode = authcodeController.text;
+                onPressed: () {
+                  final inputCode = authcodeController.text;
+                  final savedCode = controller.authcode;
 
-                    // 사용자가 입력한 코드와 전달받은 코드 비교
-                    if (inputCode == authcode) {
-                      Get.snackbar(
-                        "인증 성공",
-                        "인증번호가 확인되었습니다.",
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Color.fromARGB(255, 129, 132, 211),
-                        colorText: Colors.white,
-                      );
-                    } else {
-                      Get.snackbar(
-                        "인증 실패",
-                        "입력한 인증번호가 올바르지 않습니다.",
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                    }
-                  },
-                  child: Text('확인')),
+                  // 사용자가 입력한 코드와 저장된 코드 비교
+                  if (inputCode == savedCode) {
+                    Get.snackbar(
+                      "인증 성공",
+                      "인증번호가 확인되었습니다.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Color.fromARGB(255, 129, 132, 211),
+                      colorText: Colors.white,
+                    );
+                    // 이메일 인증 상태 업데이트
+                    controller.setEmailVerified(true);
+                  } else {
+                    Get.snackbar(
+                      "인증 실패",
+                      "입력한 인증번호가 올바르지 않습니다.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  }
+                },
+                child: Text('확인'),
+              ),
             ),
           ),
           CustomTextField(
@@ -138,16 +147,25 @@ class SignUpPage extends GetView<UserController> {
                 value, controller.confirmPassword.text),
             controller: controller.confirmPassword,
           ),
-          CustomElevatedButton(
-            text: "회원가입",
-            onPressed: () {
-              if (_formkey.currentState!.validate()) {
-                controller.signupFetchData();
-              } else {
-                Get.snackbar("회원가입 시도", "회원가입 실패");
-              }
-            },
-          ),
+          Obx(() {
+            return CustomElevatedButton(
+              text: "회원가입",
+              onPressed: () {
+                if (_formKey.currentState!.validate() &&
+                    controller.isEmailVerified.value) {
+                  controller.signupFetchData();
+                } else {
+                  Get.snackbar(
+                    "회원가입 시도",
+                    controller.isEmailVerified.value
+                        ? "회원가입 실패"
+                        : "이메일 인증을 완료해 주세요.",
+                  );
+                }
+              },
+              enabled: controller.isEmailVerified.value,
+            );
+          }),
         ],
       ),
     );

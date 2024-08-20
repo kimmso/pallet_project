@@ -35,7 +35,7 @@ class UserController extends GetxController {
   TextEditingController get confirmPassword => _confirmPassword;
   TextEditingController get newpassword => _newpassword;
   TextEditingController get confirm => _confirm;
-  TextEditingController get authcode => _authcode;
+  TextEditingController get iauthcode => _authcode;
 
   // Rx 변수를 통해 user 객체에 접근할 수 있는 getter 추가
   User? get user => _users.value;
@@ -50,6 +50,17 @@ class UserController extends GetxController {
     } else {
       return null;
     }
+  }
+
+  var isEmailVerified = false.obs; // 이메일 인증 상태를 RxBool로 선언
+  String? authcode; // 인증 코드를 저장할 변수
+
+  void setEmailVerified(bool verified) {
+    isEmailVerified.value = verified;
+  }
+
+  void setAuthCode(String? code) {
+    authcode = code;
   }
 
   void fetchData() {
