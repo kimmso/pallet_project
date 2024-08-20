@@ -13,13 +13,10 @@ class UserRepository {
   Future<User?> loginApi(Map<String, dynamic> json) async {
     try {
       return dio.post(ApiUrls.loginUrl, data: json).then((response) {
-        // print(response.statusCode);
-        // print(response.data);
         if (response.statusCode == 200) {
-          print(1111);
           String? accessToken = response.data['accessToken'];
           GetStorage().write('accessToken', accessToken);
-          print("저장한 토큰 : $accessToken");
+
           return User.fromJson(response.data);
         } else if (response.statusCode == 400) {
           final errorMessage = response.data['error'];
@@ -110,19 +107,13 @@ class UserRepository {
     }
   }
 
-  Future<void> changepasswordApi(String newpassword) async {
+  Future<void> changepasswordApi(String newpassword, String saveEmail) async {
     try {
-      print(newpassword);
-      String? accessToken = GetStorage().read('accessToken');
-
-      dio.options.headers = {'Authorization': 'Bearer $accessToken'};
-
       // 요청 데이터 준비
       final changepasswordRequestData = {
+        "id": saveEmail,
         "password": newpassword, // 사용자가 입력한 이메일을 여기에 대입
       };
-
-      print(changepasswordRequestData);
 
       // API 요청
       final response = await dio.patch(

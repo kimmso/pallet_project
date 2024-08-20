@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/widgets.dart';
-
 import 'package:get/get.dart';
 import 'package:pallet_project/src/repository/email_repository.dart';
 import 'package:pallet_project/src/view/getnumber.dart';
@@ -11,47 +9,47 @@ class EmailController extends GetxController {
   final RxBool _isLoading = false.obs;
   final TextEditingController _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final RxString _saveEmail = ''.obs;
 
   EmailController({
     required this.repository,
   });
 
   TextEditingController get email => _email;
-
   GlobalKey<FormState> get formKey => _formKey;
-
   bool get isLoading => _isLoading.value;
+  String get savedEmail => _saveEmail.value; // savedEmail getter 추가
 
   void validationEmail() {
-    _isLoading(true);
     if (_formKey.currentState!.validate()) {
+      _saveEmail.value = _email.text; // 이메일 저장
       emailFetchData();
     }
   }
 
   // 이메일 데이터를 가져오는 메서드
   void emailFetchData() async {
-    // 이메일 주소를 파라미터로 전달하여 emailApi 호출
+    _isLoading(true);
     try {
-      final code = await repository.emailApi(email.text);
+      final code = await repository.emailApi(_saveEmail.value); // 저장된 이메일로 호출
       _isLoading(false);
-
       Get.to(() => GetNumberPage(code: code!));
     } on Exception catch (err) {
+      _isLoading(false); // 실패 시에도 로딩 상태 해제
       print(err.toString());
     }
   }
 
   Future<String?> authFetchData(String email) async {
-    // 이메일 주소를 파라미터로 전달하여 emailApi 호출
+    _isLoading(true);
     try {
-      print(email);
       final code = await repository.emailApi(email);
-
       _isLoading(false);
       return code;
     } on Exception catch (err) {
+      _isLoading(false);
       print(err.toString());
+      return null;
     }
   }
 

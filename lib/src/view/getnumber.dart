@@ -46,7 +46,7 @@ class GetNumberPage extends GetView<EmailController> {
 
                     // 사용자가 입력한 코드와 전달받은 코드 비교
                     if (inputCode == code) {
-                      Get.to(() => const ChangePasswordPage());
+                      Get.to(() => ChangePasswordPage());
                     } else {
                       // 코드가 일치하지 않을 때 사용자에게 알림
                       Get.snackbar(

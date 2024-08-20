@@ -16,28 +16,29 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 컨트롤러를 초기화합니다.
-    Get.put(BottomNavController()); // BottomNavController를 초기화합니다.
-    Get.put(MyProfilController(
-        repository: MyProfilRepository())); // MyProfilController를 초기화합니다.
-    Get.put(FeedController(
-        repository: FeedRepository())); // FeedController를 초기화합니다.
+    Get.put(BottomNavController());
+    Get.put(MyProfilController(repository: MyProfilRepository()));
+    Get.put(FeedController(repository: FeedRepository()));
 
-    return Obx(() {
-      // 상태를 관찰하고 필요한 경우 UI를 업데이트합니다.
-      final bottomNavController = Get.find<BottomNavController>();
+    return Scaffold(
+      body: Obx(() {
+        final bottomNavController = Get.find<BottomNavController>();
 
-      print("Current Index: ${bottomNavController.index}"); // 디버깅 정보 출력
+        print("Current Index: ${bottomNavController.index}"); // 디버깅 정보 출력
 
-      return Scaffold(
-        body: IndexedStack(
+        return IndexedStack(
           index: bottomNavController.index,
           children: [
             Home(),
             FeedPage(controller: Get.find<FeedController>()),
             Profile(), // Profile 위젯에서 Binding을 추가로 설정할 필요 없음
           ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
+        );
+      }),
+      bottomNavigationBar: Obx(() {
+        final bottomNavController = Get.find<BottomNavController>();
+
+        return BottomNavigationBar(
           currentIndex: bottomNavController.index,
           onTap: (index) {
             print("Tapped Index: $index"); // 탭된 인덱스 디버깅
@@ -66,8 +67,8 @@ class App extends StatelessWidget {
               label: 'myinfo',
             ),
           ],
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

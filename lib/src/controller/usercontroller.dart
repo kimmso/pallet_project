@@ -115,12 +115,13 @@ class UserController extends GetxController {
     repository.putUsers(user);
   }
 
-  void changepasswordfetchData(String newpassword) {
+  void changepasswordfetchData(String newpassword, String saveEmail) {
     validate(newpassword.toString());
     final user = {
+      'id': saveEmail,
       'password': newpassword,
     };
-    repository.changepasswordApi(newpassword);
+    repository.changepasswordApi(newpassword, saveEmail);
 
     moveToLogin();
   }

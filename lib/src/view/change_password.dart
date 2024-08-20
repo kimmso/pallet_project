@@ -1,11 +1,14 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:pallet_project/src/controller/emailcontroller.dart';
 import 'package:pallet_project/src/controller/usercontroller.dart';
 import 'package:pallet_project/src/widget/elevatedbutton.dart';
 
 class ChangePasswordPage extends GetView<UserController> {
-  const ChangePasswordPage({super.key});
+  ChangePasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +61,17 @@ class ChangePasswordPage extends GetView<UserController> {
                 CustomElevatedButton(
                   text: "확인",
                   onPressed: () {
+                    final emailController = Get.find<EmailController>();
+
                     final newpassword = newpasswordController.text;
                     final confirm = confirmnewpasswordController.text;
 
                     if (newpassword == confirm) {
                       // 비밀번호 변경 메서드 호출
-                      controller.changepasswordfetchData(newpassword);
+                      controller.changepasswordfetchData(
+                        newpassword,
+                        emailController.savedEmail, // savedEmail getter 사용
+                      );
                     } else {
                       Get.snackbar(
                         '오류',
