@@ -9,40 +9,37 @@ import 'package:pallet_project/src/utils/dio_interceptor.dart';
 class MyProfilRepository {
   final dio = Dio()..interceptors.add(BaseInterceptor());
 
-  Future<MyProfil?> myinfoApi() async {
-    try {
-      String? accessToken = GetStorage().read('accessToken');
+  Future<MyProfil> myinfoApi() async {
+    String? accessToken = GetStorage().read('accessToken');
 
-      dio.options.headers = {'Authorization': 'Bearer $accessToken'};
+    dio.options.headers = {'Authorization': 'Bearer $accessToken'};
 
-      final response = await dio.get(ApiUrls.myinfoUrl);
+    final response = await dio.get(ApiUrls.myinfoUrl);
 
-      if (response.statusCode == 200) {
-        print(response.statusCode);
-        return MyProfil.fromJson(response.data);
-      } else {
-        return null;
-      }
-    } catch (e) {
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      return MyProfil.fromJson(response.data);
+    } else {
       throw Exception();
     }
   }
 
-  Future<void> nicknameApi(Map<String, dynamic> json) async {
-    try {
-      String? accessToken = GetStorage().read('accessToken');
+  Future<String> nicknameApi(Map<String, dynamic> json) async {
+    String? accessToken = GetStorage().read('accessToken');
 
-      dio.options.headers = {'Authorization': 'Bearer $accessToken'};
+    dio.options.headers = {'Authorization': 'Bearer $accessToken'};
 
-      final response = await dio.patch(ApiUrls.nicknameUrl, data: json);
+    final response = await dio.patch(ApiUrls.nicknameUrl, data: json);
+    print(111);
+    if (response.statusCode == 200) {
+      final result = response.data;
+      print(response.data);
+      print(124);
+      print(result);
+      return result["name"];
+    } else {
+      Get.snackbar('실패', '실패');
 
-      if (response.statusCode == 200) {
-      } else {
-        Get.snackbar('실패', '실패');
-
-        throw Exception();
-      }
-    } catch (e) {
       throw Exception();
     }
   }

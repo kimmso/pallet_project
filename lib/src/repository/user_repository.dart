@@ -123,7 +123,7 @@ class UserRepository {
           contentType: Headers.jsonContentType, // Content-Type을 JSON으로 설정
         ),
       );
-      print(12345);
+
       // 응답 처리
       if (response.statusCode == 200) {
         print('비밀번호 변경 성공: ${response.statusCode}');

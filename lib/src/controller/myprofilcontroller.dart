@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+
 import 'package:pallet_project/src/binding/init_binding.dart';
+import 'package:pallet_project/src/controller/usercontroller.dart';
 import 'package:pallet_project/src/model/myprofil.dart';
+import 'package:pallet_project/src/model/user.dart';
 import 'package:pallet_project/src/repository/myprofil_repository.dart';
 import 'package:pallet_project/src/view/login.dart';
 import 'package:pallet_project/src/view/profil.dart';
@@ -24,13 +27,29 @@ class MyProfilController extends GetxController {
   TextEditingController get password => _password;
   TextEditingController get confirmpassword => _confirmpassword;
 
-  Future<MyProfil?> myinfofetchData() async {
-    final myprofil = await repository.myinfoApi();
-    if (myprofil != null) {
-      _myprofils.value = myprofil;
+  MyProfil? get profile => _myprofils.value;
 
-      return myprofil;
-    } else {}
+  @override
+  void onInit() {
+    myinfofetchData();
+    super.onInit();
+  }
+
+  void updateMyProfile(String newName) {
+    final newProfile = MyProfil(
+        id: _myprofils.value!.id,
+        name: newName,
+        total_like_count: _myprofils.value!.total_like_count,
+        total_post_count: _myprofils.value!.total_post_count,
+        myPost: _myprofils.value!.myPost);
+
+    _myprofils(newProfile);
+  }
+
+  void myinfofetchData() async {
+    final myprofil = await repository.myinfoApi();
+
+    _myprofils(myprofil);
   }
 
   validate(String value) {
@@ -45,14 +64,17 @@ class MyProfilController extends GetxController {
     }
   }
 
-  Future<void> nicknamefetchData() async {
-    validate(name.text.toString());
+  void nicknamefetchData() async {
+    await validate(name.text.toString());
 
     final user = {
       'name': name.text.toString(),
     };
 
     final result = await repository.nicknameApi(user);
+
+    print(1111);
+    updateMyProfile(result);
 
     moveToprofil();
   }
@@ -66,12 +88,12 @@ class MyProfilController extends GetxController {
 
     moveTologin();
   }
-}
 
-void moveToprofil() {
-  Get.off(() => Profile());
-}
+  void moveToprofil() {
+    Get.until((route) => route.isFirst);
+  }
 
-void moveTologin() {
-  Get.off(() => LoginPage(), binding: InitBinding());
+  void moveTologin() {
+    Get.off(() => LoginPage(), binding: InitBinding());
+  }
 }

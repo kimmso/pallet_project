@@ -8,7 +8,7 @@ import 'package:pallet_project/src/view/login.dart';
 import 'package:pallet_project/src/view/signup.dart';
 
 class UserController extends GetxController {
-  final Rxn<User> _users = Rxn<User>();
+  final Rxn<User> _user = Rxn<User>();
 
   var profileImagePath = ''.obs;
 
@@ -37,16 +37,24 @@ class UserController extends GetxController {
   TextEditingController get confirm => _confirm;
   TextEditingController get iauthcode => _authcode;
 
-  // Rx 변수를 통해 user 객체에 접근할 수 있는 getter 추가
-  User? get user => _users.value;
+  static UserController get to => Get.find();
 
-  validate(String value) {
-    if (value == null || value.isEmpty) {
-      return "공백이 들어갈 수 업습니다.";
+  // Rx 변수를 통해 user 객체에 접근할 수 있는 getter 추가
+  User? get user => _user.value;
+
+  void updateUser(User user) {
+    _user(user);
+    _user.refresh();
+  }
+
+  // validate 메서드 수정: null 검사 제거
+  String? validate(String value) {
+    if (value.isEmpty) {
+      return "공백이 들어갈 수 없습니다."; // 공백 검사를 위한 수정
     } else if (value.length > 12) {
-      return "패스워드의 길이를 초과하였습니다.";
+      return "패스워드의 길이를 초과하였습니다."; // 길이 초과 검사
     } else if (value.length < 4) {
-      return "패스워드의 최소 길이는 4자입니다";
+      return "패스워드의 최소 길이는 4자입니다"; // 길이 부족 검사
     } else {
       return null;
     }
@@ -71,7 +79,7 @@ class UserController extends GetxController {
 
     repository.loginApi(user).then((user) {
       if (user != null) {
-        _users.value = user;
+        _user.value = user;
         moveToApp();
       } else {
         Get.snackbar(
@@ -100,7 +108,7 @@ class UserController extends GetxController {
     };
 
     repository.signupApi(user).then((user) {
-      _users.value = user;
+      _user.value = user;
       moveToLogin();
     });
   }
@@ -158,7 +166,7 @@ class UserController extends GetxController {
 
 //App.dart 화면으로 이동
   void moveToApp() {
-    Get.to(() => const App(), binding: InitBinding());
+    Get.off(() => const App(), binding: InitBinding());
   }
 
   bool get isProfileImageSet => profileImagePath.value.isNotEmpty;

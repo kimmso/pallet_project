@@ -10,80 +10,52 @@ import 'package:pallet_project/src/repository/myprofil_repository.dart';
 import 'package:pallet_project/src/view/info_modify.dart';
 import 'package:pallet_project/src/view/mydetail.dart';
 
-class Profile extends StatefulWidget {
-  Profile({
+class Profile extends GetView<MyProfilController> {
+  const Profile({
     Key? key,
     // required BindingsBuilder binding,
   }) : super(key: key);
 
   @override
-  State<Profile> createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  late Future<MyProfil?> _myprofilFuture;
-  final MyProfilController myprofilController =
-      Get.put(MyProfilController(repository: MyProfilRepository()));
-
-  @override
-  void initState() {
-    super.initState();
-    _myprofilFuture = myprofilController.myinfofetchData();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          '나의 프로필',
-          style: TextStyle(
-            fontFamily: 'NanumGothic',
-            fontWeight: FontWeight.bold,
+    return Obx(
+      () => Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            title: const Text(
+              '나의 프로필',
+              style: TextStyle(
+                fontFamily: 'NanumGothic',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: [_profilmenu()],
           ),
-        ),
-        actions: [_profilmenu()],
-      ),
-      body: FutureBuilder<MyProfil?>(
-        future: _myprofilFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('프로필 로드 중 오류 발생'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('프로필 데이터 없음'));
-          } else {
-            MyProfil profile = snapshot.data!;
-            return GetBuilder<MyProfilController>(
-              builder: (controller) {
-                return SingleChildScrollView(
+          body: (controller.profile != null)
+              ? SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 20.0, horizontal: 20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _profileBox(context, profile),
+                        _profileBox(controller.profile!),
                         const SizedBox(height: 20),
-                        _postcount(profile),
+                        _postcount(controller.profile!),
                         const SizedBox(height: 20),
-                        _myfeed(profile.myPost), // myPost 리스트를 전달
+                        _myfeed(controller.profile!.myPost), // myPost 리스트를 전달
                       ],
                     ),
                   ),
-                );
-              },
-            );
-          }
-        },
-      ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                )),
     );
   }
 
-  Widget _profileBox(BuildContext context, MyProfil profile) {
+  Widget _profileBox(MyProfil profile) {
     double size = 100; // 고정된 크기 설정
     UserController controller = Get.find<UserController>();
 
@@ -251,7 +223,7 @@ class _ProfileState extends State<Profile> {
                       Text('정보 수정하기'),
                     ],
                   ),
-                  onTap: () => _showPasswordBottomSheet(context),
+                  onTap: () => _showPasswordBottomSheet(),
                 ),
                 PopupMenuItem(
                   child: const Row(
@@ -286,79 +258,72 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _showPasswordBottomSheet(BuildContext context) {
+  void _showPasswordBottomSheet() {
     final _formKey = GlobalKey<FormState>();
     TextEditingController _passwordController = TextEditingController();
-    UserController controller = Get.find<UserController>();
 
-    showModalBottomSheet(
-      context: context,
+    Get.bottomSheet(
       isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16,
-            right: 16,
-            top: 16,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  '비밀번호 입력',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      Container(
+        padding: EdgeInsets.all(16),
+        color: Colors.white,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '비밀번호 입력',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: '비밀번호',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: '비밀번호',
-                    border: OutlineInputBorder(),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '비밀번호를 입력하세요.';
+                  }
+                  // 이 부분에 실제 사용자 비밀번호와 비교 로직을 넣어야 합니다.
+                  // 예시로 사용자 컨트롤러의 비밀번호를 가져와 비교합니다.
+                  String correctPassword = UserController.to.password.text;
+                  if (value != correctPassword) {
+                    return '비밀번호가 틀립니다.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text('취소'),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '비밀번호를 입력하세요.';
-                    }
-                    // 이 부분에 실제 사용자 비밀번호와 비교 로직을 넣어야 합니다.
-                    // 예시로 사용자 컨트롤러의 비밀번호를 가져와 비교합니다.
-                    String correctPassword = controller.password.text;
-                    if (value != correctPassword) {
-                      return '비밀번호가 틀립니다.';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('취소'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.of(context).pop();
-                          Get.to(() => InfoModifyPage());
-                        }
-                      },
-                      child: const Text('확인'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Get.to(() => InfoModifyPage());
+                        // Get.back();
+                        // Get.to(() => InfoModifyPage());
+                      }
+                    },
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

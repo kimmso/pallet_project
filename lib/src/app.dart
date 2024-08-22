@@ -10,7 +10,7 @@ import 'package:pallet_project/src/view/home.dart';
 import 'package:pallet_project/src/view/profil.dart';
 import 'package:pallet_project/src/widget/image_data.dart';
 
-class App extends StatelessWidget {
+class App extends GetView<BottomNavController> {
   const App({super.key});
 
   @override
@@ -22,27 +22,28 @@ class App extends StatelessWidget {
 
     return Scaffold(
       body: Obx(() {
-        final bottomNavController = Get.find<BottomNavController>();
-
-        print("Current Index: ${bottomNavController.index}"); // 디버깅 정보 출력
+        print("Current Index: ${controller.index}"); // 디버깅 정보 출력
 
         return IndexedStack(
-          index: bottomNavController.index,
+          index: controller.index,
           children: [
             Home(),
             FeedPage(controller: Get.find<FeedController>()),
-            Profile(), // Profile 위젯에서 Binding을 추가로 설정할 필요 없음
+            Navigator(
+              key: Get.nestedKey(1),
+              onGenerateRoute: (settings) {
+                return GetPageRoute(page: () => Profile());
+              },
+            ),
           ],
         );
       }),
       bottomNavigationBar: Obx(() {
-        final bottomNavController = Get.find<BottomNavController>();
-
         return BottomNavigationBar(
-          currentIndex: bottomNavController.index,
+          currentIndex: controller.index,
           onTap: (index) {
             print("Tapped Index: $index"); // 탭된 인덱스 디버깅
-            bottomNavController.changeIndex(index);
+            controller.changeIndex(index);
           },
           showSelectedLabels: false,
           showUnselectedLabels: false,

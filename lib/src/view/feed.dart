@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get_storage/get_storage.dart';
 import 'package:pallet_project/src/controller/feedcontroller.dart';
 import 'package:pallet_project/src/model/feed.dart';
@@ -20,7 +19,6 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-
     _feedsFuture = widget.controller.feedFetchData();
   }
 
@@ -70,15 +68,12 @@ class _FeedPageState extends State<FeedPage> {
               if (index < feeds.length) {
                 Feed feed = feeds[index];
                 return GestureDetector(
-                  // GestureDetector 추가
                   onTap: () {
-                    // onTap 콜백 추가
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
                             DetailPage(post_no: feed.post_no!),
-                        // DetailPage로 이동
                       ),
                     );
                   },
@@ -91,8 +86,8 @@ class _FeedPageState extends State<FeedPage> {
                   ),
                 );
               } else {
-                // Fetching more data if this is the last item in the grid
-                if (feeds.length % 18 == 0) {
+                // 리스트가 비어있지 않을 때만 추가 데이터를 가져옴
+                if (feeds.isNotEmpty && feeds.length % 18 == 0) {
                   String? post_no = feeds.last.post_no.toString();
                   GetStorage().write('post_no', post_no);
                   print("Saved post number: $post_no");
@@ -109,8 +104,7 @@ class _FeedPageState extends State<FeedPage> {
                 return Container();
               }
             },
-            itemCount: feeds.length +
-                1, // Add one to account for possible loading indicator
+            itemCount: feeds.length + 1,
           );
         }
       },

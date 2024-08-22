@@ -36,7 +36,7 @@ class InfoModifyPage extends GetView<UserController> {
                 CustomTextField(
                   controller: MyProfilController.to.name,
                   hint: "이름",
-                  validator: (String) {},
+                  validator: (result) {},
                 ),
                 const SizedBox(
                   height: 10,
@@ -44,10 +44,8 @@ class InfoModifyPage extends GetView<UserController> {
                 CustomElevatedButton(
                   text: "이름 수정 완료하기",
                   onPressed: () {
-                    final MyProfilController controller =
-                        Get.find<MyProfilController>();
                     if (_formkey.currentState!.validate()) {
-                      controller.nicknamefetchData();
+                      MyProfilController.to.nicknamefetchData();
                     } else {
                       Get.snackbar("이름 바꾸기 성공", "실패");
                     }
