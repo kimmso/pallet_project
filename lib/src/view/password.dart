@@ -45,6 +45,7 @@ class PasswordPage extends GetView<UserController> {
                     Get.find<MyProfilController>();
                 if (_formkey.currentState!.validate()) {
                   controller.passwordfetchData();
+                  Get.snackbar("비밀번호 변경 성공", "성공");
                 } else {
                   Get.snackbar("비밀번호 변경 실패", "실패");
                 }

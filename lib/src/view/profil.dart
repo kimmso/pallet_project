@@ -6,7 +6,6 @@ import 'package:pallet_project/src/controller/myprofilcontroller.dart';
 import 'package:pallet_project/src/controller/usercontroller.dart';
 import 'package:pallet_project/src/model/feed.dart';
 import 'package:pallet_project/src/model/myprofil.dart';
-import 'package:pallet_project/src/repository/myprofil_repository.dart';
 import 'package:pallet_project/src/view/info_modify.dart';
 import 'package:pallet_project/src/view/mydetail.dart';
 

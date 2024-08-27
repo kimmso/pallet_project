@@ -73,7 +73,6 @@ class MyProfilController extends GetxController {
 
     final result = await repository.nicknameApi(user);
 
-    print(1111);
     updateMyProfile(result);
 
     moveToprofil();
