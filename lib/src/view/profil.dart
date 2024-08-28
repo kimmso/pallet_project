@@ -171,12 +171,12 @@ class Profile extends GetView<MyProfilController> {
         itemCount: myPost.length,
         itemBuilder: (context, index) {
           Feed feed = myPost[index]; // myPost 리스트에서 Feed 객체 가져오기
-          String? photoUrl = feed.photo_url;
+          String? photoUrl = feed.photoUrl;
 
           return GestureDetector(
             onTap: () {
               // 원하는 페이지로 이동하는 코드 추가
-              Get.to(() => MydetailPage(post_no: feed.post_no!));
+              Get.to(() => MydetailPage(post_no: feed.postNo!));
             },
             child: Container(
               decoration: BoxDecoration(

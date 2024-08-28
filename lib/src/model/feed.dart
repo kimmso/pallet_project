@@ -3,11 +3,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'feed.freezed.dart';
 part 'feed.g.dart';
 
-@freezed
+@unfreezed
 class Feed with _$Feed {
   factory Feed({
-    required String? photo_url,
-    required int? post_no,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: "photo_url") required String? photoUrl,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: "post_no") required int? postNo,
   }) = _Feed;
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 }

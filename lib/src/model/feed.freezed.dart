@@ -20,8 +20,14 @@ Feed _$FeedFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Feed {
-  String? get photo_url => throw _privateConstructorUsedError;
-  int? get post_no => throw _privateConstructorUsedError;
+  @JsonKey(name: "photo_url")
+  String? get photoUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: "photo_url")
+  set photoUrl(String? value) => throw _privateConstructorUsedError;
+  @JsonKey(name: "post_no")
+  int? get postNo => throw _privateConstructorUsedError;
+  @JsonKey(name: "post_no")
+  set postNo(int? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +39,9 @@ abstract class $FeedCopyWith<$Res> {
   factory $FeedCopyWith(Feed value, $Res Function(Feed) then) =
       _$FeedCopyWithImpl<$Res, Feed>;
   @useResult
-  $Res call({String? photo_url, int? post_no});
+  $Res call(
+      {@JsonKey(name: "photo_url") String? photoUrl,
+      @JsonKey(name: "post_no") int? postNo});
 }
 
 /// @nodoc
@@ -49,17 +57,17 @@ class _$FeedCopyWithImpl<$Res, $Val extends Feed>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? photo_url = freezed,
-    Object? post_no = freezed,
+    Object? photoUrl = freezed,
+    Object? postNo = freezed,
   }) {
     return _then(_value.copyWith(
-      photo_url: freezed == photo_url
-          ? _value.photo_url
-          : photo_url // ignore: cast_nullable_to_non_nullable
+      photoUrl: freezed == photoUrl
+          ? _value.photoUrl
+          : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      post_no: freezed == post_no
-          ? _value.post_no
-          : post_no // ignore: cast_nullable_to_non_nullable
+      postNo: freezed == postNo
+          ? _value.postNo
+          : postNo // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
   }
@@ -72,7 +80,9 @@ abstract class _$$FeedImplCopyWith<$Res> implements $FeedCopyWith<$Res> {
       __$$FeedImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? photo_url, int? post_no});
+  $Res call(
+      {@JsonKey(name: "photo_url") String? photoUrl,
+      @JsonKey(name: "post_no") int? postNo});
 }
 
 /// @nodoc
@@ -85,17 +95,17 @@ class __$$FeedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? photo_url = freezed,
-    Object? post_no = freezed,
+    Object? photoUrl = freezed,
+    Object? postNo = freezed,
   }) {
     return _then(_$FeedImpl(
-      photo_url: freezed == photo_url
-          ? _value.photo_url
-          : photo_url // ignore: cast_nullable_to_non_nullable
+      photoUrl: freezed == photoUrl
+          ? _value.photoUrl
+          : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      post_no: freezed == post_no
-          ? _value.post_no
-          : post_no // ignore: cast_nullable_to_non_nullable
+      postNo: freezed == postNo
+          ? _value.postNo
+          : postNo // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }
@@ -104,34 +114,24 @@ class __$$FeedImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$FeedImpl implements _Feed {
-  _$FeedImpl({required this.photo_url, required this.post_no});
+  _$FeedImpl(
+      {@JsonKey(name: "photo_url") required this.photoUrl,
+      @JsonKey(name: "post_no") required this.postNo});
 
   factory _$FeedImpl.fromJson(Map<String, dynamic> json) =>
       _$$FeedImplFromJson(json);
 
   @override
-  final String? photo_url;
+  @JsonKey(name: "photo_url")
+  String? photoUrl;
   @override
-  final int? post_no;
+  @JsonKey(name: "post_no")
+  int? postNo;
 
   @override
   String toString() {
-    return 'Feed(photo_url: $photo_url, post_no: $post_no)';
+    return 'Feed(photoUrl: $photoUrl, postNo: $postNo)';
   }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FeedImpl &&
-            (identical(other.photo_url, photo_url) ||
-                other.photo_url == photo_url) &&
-            (identical(other.post_no, post_no) || other.post_no == post_no));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, photo_url, post_no);
 
   @JsonKey(ignore: true)
   @override
@@ -149,15 +149,21 @@ class _$FeedImpl implements _Feed {
 
 abstract class _Feed implements Feed {
   factory _Feed(
-      {required final String? photo_url,
-      required final int? post_no}) = _$FeedImpl;
+      {@JsonKey(name: "photo_url") required String? photoUrl,
+      @JsonKey(name: "post_no") required int? postNo}) = _$FeedImpl;
 
   factory _Feed.fromJson(Map<String, dynamic> json) = _$FeedImpl.fromJson;
 
   @override
-  String? get photo_url;
+  @JsonKey(name: "photo_url")
+  String? get photoUrl;
+  @JsonKey(name: "photo_url")
+  set photoUrl(String? value);
   @override
-  int? get post_no;
+  @JsonKey(name: "post_no")
+  int? get postNo;
+  @JsonKey(name: "post_no")
+  set postNo(int? value);
   @override
   @JsonKey(ignore: true)
   _$$FeedImplCopyWith<_$FeedImpl> get copyWith =>

@@ -28,7 +28,7 @@ class App extends GetView<BottomNavController> {
           index: controller.index,
           children: [
             Home(),
-            FeedPage(controller: Get.find<FeedController>()),
+            FeedPage(),
             Navigator(
               key: Get.nestedKey(1),
               onGenerateRoute: (settings) {

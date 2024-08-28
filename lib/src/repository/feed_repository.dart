@@ -7,21 +7,19 @@ import 'package:pallet_project/src/utils/apiurl.dart';
 class FeedRepository {
   final dio = Dio();
 
-  Future<List<Feed>?> feedApi() async {
-    try {
-      final response = await dio.get(ApiUrls.feedUrl);
+  Future<List<Feed>> feedApi() async {
+    return dio.get(ApiUrls.feedUrl).then((response) {
+      return List<Feed>.from(List<Map<String, dynamic>>.from(response.data)
+          .map((json) => Feed.fromJson(json))
+          .toList());
+    });
+  }
 
-      if (response.statusCode == 200) {
-        List<Feed> feeds = [];
-        for (var data in response.data) {
-          final feed = Feed.fromJson(data);
-          feeds.add(feed);
-        }
-        return feeds;
-      }
-    } catch (e) {
-      throw Exception();
-    }
+  Future<List<Feed>> secondApi(int pageNo) async {
+    return dio.get("${ApiUrls.secondUrl}/$pageNo").then((response) =>
+        List<Map<String, dynamic>>.from(response.data)
+            .map((json) => Feed.fromJson(json))
+            .toList());
   }
 
   Future<void> putFeeds() async {
@@ -33,29 +31,6 @@ class FeedRepository {
         }
         return Feed.fromJson(response.data);
       });
-    } catch (e) {
-      throw Exception();
-    }
-  }
-
-  Future<List<Feed>?> secondApi() async {
-    try {
-      String? post_no = GetStorage().read('post_no');
-
-      if (post_no != null) {
-        String secondUrl = "${ApiUrls.secondUrl}$post_no";
-
-        final response = await dio.get(secondUrl);
-
-        if (response.statusCode == 200) {
-          List<Feed> feeds = [];
-          for (var data in response.data) {
-            final feed = Feed.fromJson(data);
-            feeds.add(feed);
-          }
-          return feeds;
-        }
-      }
     } catch (e) {
       throw Exception();
     }
