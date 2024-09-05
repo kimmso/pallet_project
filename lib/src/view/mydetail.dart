@@ -2,75 +2,62 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pallet_project/src/controller/detailcontroller.dart';
-import 'package:pallet_project/src/controller/likecontroller.dart';
+
 import 'package:pallet_project/src/model/feeddetail.dart';
 import 'package:pallet_project/src/repository/detail_repository.dart';
-import 'package:pallet_project/src/repository/like_repository.dart';
 
-class MydetailPage extends StatefulWidget {
-  final int post_no;
-  const MydetailPage({Key? key, required this.post_no}) : super(key: key);
+class MydetailPage extends GetView<DetailController> {
+  final int postNo;
+  const MydetailPage({Key? key, required this.postNo}) : super(key: key);
 
-  @override
-  _MyDetailPageState createState() => _MyDetailPageState();
-}
+//   @override
+//   _MyDetailPageState createState() => _MyDetailPageState();
+// }
 
-class _MyDetailPageState extends State<MydetailPage> {
-  late Future<FeedDetail?> _feeddetailsFuture;
-  final DetailController detailController =
-      Get.put(DetailController(repository: DetailRepository()));
-  final LikeController likeController =
-      Get.put(LikeController(repository: LikeRepository()));
+// class _MyDetailPageState extends State<MydetailPage> {
+//   late Future<FeedDetail?> _feeddetailsFuture;
+//   final DetailController detailController =
+//       Get.put(DetailController(repository: DetailRepository()));
+//   // final LikeController likeController =
+//   //     Get.put(LikeController(repository: LikeRepository()));
 
-  @override
-  void initState() {
-    super.initState();
-    _feeddetailsFuture = detailController.detailfetchData(widget.post_no);
-    likeController.pluslikefetchData(widget.post_no);
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _feeddetailsFuture = detailController.detailfetchData(widget.postNo);
+//     // likeController.pluslikefetchData(widget.post_no);
+//   }
 
-  void _toggleLike() async {
-    if (likeController.isLiked.value) {
-      await likeController.minuslikefetchData(widget.post_no);
+  void toggleLike() {
+    if (controller.isLiked.value) {
+      controller.minuslikefetchData(postNo);
     } else {
-      await likeController.pluslikefetchData(widget.post_no);
+      controller.pluslikefetchData(postNo);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<FeedDetail?> feedDetail =
+        controller.detailfetchData(postNo); // 데이터 불러오기
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: FutureBuilder<FeedDetail?>(
-          future: _feeddetailsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
-            } else if (snapshot.hasError) {
-              return Text('Error');
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return Text('No data found');
-            } else {
-              return _username(snapshot.data!.name);
-            }
-          },
-        ),
+        title: Obx(() {
+          final feedDetail = controller.feeddetails;
+          String name = feedDetail?.name ?? '알 수 없음';
+          return Text('$name 님의 게시글');
+        }),
       ),
-      body: FutureBuilder<FeedDetail?>(
-        future: _feeddetailsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No data found'));
-          } else {
-            return _body(snapshot.data!);
-          }
-        },
-      ),
+      body: Obx(() {
+        final feedDetail = controller.feeddetails;
+        if (feedDetail != null) {
+          return _body(feedDetail);
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      }),
     );
   }
 
@@ -81,6 +68,7 @@ class _MyDetailPageState extends State<MydetailPage> {
           children: [
             Row(
               children: [
+                _likeButton(),
                 _likeCount(),
               ],
             ),
@@ -122,26 +110,32 @@ class _MyDetailPageState extends State<MydetailPage> {
     );
   }
 
+  Widget _likeButton() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Obx(() {
+        bool isLiked = controller.isLiked.value;
+        print('isLiked: $isLiked'); // 상태 확인
+        return IconButton(
+          icon: Icon(
+            isLiked ? Icons.favorite : Icons.favorite_border,
+            color: isLiked ? Colors.red : null,
+          ),
+          onPressed: toggleLike, // 좋아요 토글 기능
+        );
+      }),
+    );
+  }
+
   Widget _likeCount() {
     return Obx(() {
-      int like_count =
-          likeController.like_count.value; // likeCount 변수를 사용하여 좋아요 개수를 가져옵니다.
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.favorite,
-              color: Colors.red,
-            ),
-          ),
-          Text(
-            '$like_count', // 좋아요 개수 표시
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-      );
+      int likeCount = controller.like_count.value;
+      return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Text(
+          '$likeCount', // 좋아요 개수 표시
+          style: const TextStyle(fontSize: 16),
+        ),
+      ]);
     });
   }
 

@@ -21,52 +21,68 @@ class Home extends GetView<HomeController> {
               fontWeight: FontWeight.bold, // 타이틀의 글꼴 두껍게 설정
             ),
           ),
-          leading: SizedBox.shrink(), // 뒤로가기 버튼 없애기
+          leading: const SizedBox.shrink(), // 뒤로가기 버튼 없애기
         ),
-        body: _body(), // 화면의 주요 내용을 담은 위젯
+        body: SizedBox(
+          key: controller.calendarKey, // 달력 위젯의 고유 키
+          height: 350, // 달력 위젯의 높이
+          child: SingleChildScrollView(
+            child: Center(
+              child: HomeCalendar(
+                focusMonth: controller.headerDate.value, // 달력의 초기 표시 월
+                onCalendarCreated:
+                    controller.onCalendarCreated, // 달력이 생성될 때 호출되는 콜백 함수
+                onCalendarDaySelected: (selectedDay) {
+                  controller.updateSelectedDay(
+                      selectedDay); // 사용자가 날짜를 선택했을 때 호출되는 콜백 함수
+                },
+              ),
+            ),
+          ),
+        ), // 화면의 주요 내용을 담은 위젯
         floatingActionButton:
             HomeFab(onPressed: controller.handleFabPress), // FAB 버튼
       ),
     );
   }
 
-  // 화면의 주요 내용을 담은 위젯
-  Widget _body() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // const SizedBox(
-          //   height: 100,
-          // ),
-          _calendalWidget(), // 달력 위젯
+  // // 화면의 주요 내용을 담은 위젯
+  // Widget _body() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       children: [
+  //         // const SizedBox(
+  //         //   height: 100,
+  //         // ),
+  //         _calendalWidget(), // 달력 위젯
 
-          // if (controller.isDateSelected.value)
-          //   _cardWidget(), // 선택된 날짜에 대한 카드 위젯
-        ],
-      ),
-    );
-  }
+  //         // if (controller.isDateSelected.value)
+  //         //   _cardWidget(), // 선택된 날짜에 대한 카드 위젯
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  // 달력 위젯
-  Widget _calendalWidget() {
-    return SizedBox(
-      key: controller.calendarKey, // 달력 위젯의 고유 키
-      height: 350, // 달력 위젯의 높이
-      child: SingleChildScrollView(
-        child: Center(
-          child: HomeCalendar(
-            focusMonth: controller.headerDate.value, // 달력의 초기 표시 월
-            onCalendarCreated:
-                controller.onCalendarCreated, // 달력이 생성될 때 호출되는 콜백 함수
-            onCalendarDaySelected: (selectedDay) {
-              controller
-                  .updateSelectedDay(selectedDay); // 사용자가 날짜를 선택했을 때 호출되는 콜백 함수
-            },
-          ),
-        ),
-      ),
-    );
-  }
+  // // 달력 위젯
+  // Widget _calendalWidget() {
+  //   return SizedBox(
+  //     key: controller.calendarKey, // 달력 위젯의 고유 키
+  //     height: 350, // 달력 위젯의 높이
+  //     child: SingleChildScrollView(
+  //       child: Center(
+  //         child: HomeCalendar(
+  //           focusMonth: controller.headerDate.value, // 달력의 초기 표시 월
+  //           onCalendarCreated:
+  //               controller.onCalendarCreated, // 달력이 생성될 때 호출되는 콜백 함수
+  //           onCalendarDaySelected: (selectedDay) {
+  //             controller
+  //                 .updateSelectedDay(selectedDay); // 사용자가 날짜를 선택했을 때 호출되는 콜백 함수
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // 선택된 날짜에 대한 카드 위젯
   // Widget _cardWidget() {

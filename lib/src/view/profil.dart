@@ -176,7 +176,7 @@ class Profile extends GetView<MyProfilController> {
           return GestureDetector(
             onTap: () {
               // 원하는 페이지로 이동하는 코드 추가
-              Get.to(() => MydetailPage(post_no: feed.postNo!));
+              Get.to(() => MydetailPage(postNo: feed.postNo!));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -287,8 +287,7 @@ class Profile extends GetView<MyProfilController> {
                   if (value == null || value.isEmpty) {
                     return '비밀번호를 입력하세요.';
                   }
-                  // 이 부분에 실제 사용자 비밀번호와 비교 로직을 넣어야 합니다.
-                  // 예시로 사용자 컨트롤러의 비밀번호를 가져와 비교합니다.
+
                   String correctPassword = UserController.to.password.text;
                   if (value != correctPassword) {
                     return '비밀번호가 틀립니다.';

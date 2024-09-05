@@ -43,9 +43,9 @@ class FeedController extends GetxController {
     }
   }
 
-  void feedPutData() {
-    repository.putFeeds();
-  }
+  // void feedPutData() {
+  //   repository.putFeeds();
+  // }
 
   void getNewFeedsPage() async {
     if (_scrollController.offset !=

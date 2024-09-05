@@ -22,8 +22,6 @@ class App extends GetView<BottomNavController> {
 
     return Scaffold(
       body: Obx(() {
-        print("Current Index: ${controller.index}"); // 디버깅 정보 출력
-
         return IndexedStack(
           index: controller.index,
           children: [
@@ -32,7 +30,7 @@ class App extends GetView<BottomNavController> {
             Navigator(
               key: Get.nestedKey(1),
               onGenerateRoute: (settings) {
-                return GetPageRoute(page: () => Profile());
+                return GetPageRoute(page: () => const Profile());
               },
             ),
           ],
@@ -42,7 +40,6 @@ class App extends GetView<BottomNavController> {
         return BottomNavigationBar(
           currentIndex: controller.index,
           onTap: (index) {
-            print("Tapped Index: $index"); // 탭된 인덱스 디버깅
             controller.changeIndex(index);
           },
           showSelectedLabels: false,

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-import 'package:get_storage/get_storage.dart';
 import 'package:pallet_project/src/model/feed.dart';
 import 'package:pallet_project/src/utils/apiurl.dart';
 
@@ -22,31 +21,35 @@ class FeedRepository {
             .toList());
   }
 
-  Future<void> putFeeds() async {
-    try {
-      dio.get(ApiUrls.feedUrl).then((response) {
-        if (response.statusCode == 200) {
-        } else {
-          // exception
-        }
-        return Feed.fromJson(response.data);
-      });
-    } catch (e) {
-      throw Exception();
-    }
-  }
+  // Future<void> putFeeds() async {
+  //   try {
+  //     dio.get(ApiUrls.feedUrl).then((response) {
+  //       if (response.statusCode == 200) {
+  //         print(122);
+  //         final result = response.data;
 
-  Future<void> putSeconds() async {
-    try {
-      dio.get(ApiUrls.feedUrl).then((response) {
-        if (response.statusCode == 200) {
-        } else {
-          // exception
-        }
-        return Feed.fromJson(response.data);
-      });
-    } catch (e) {
-      throw Exception();
-    }
-  }
+  //         return result;
+  //       } else {
+  //         // exception
+  //       }
+  //       return Feed.fromJson(response.data);
+  //     });
+  //   } catch (e) {
+  //     throw Exception();
+  //   }
+  // }
+
+  // Future<void> putSeconds() async {
+  //   try {
+  //     dio.get(ApiUrls.feedUrl).then((response) {
+  //       if (response.statusCode == 200) {
+  //       } else {
+  //         // exception
+  //       }
+  //       return Feed.fromJson(response.data);
+  //     });
+  //   } catch (e) {
+  //     throw Exception();
+  //   }
+  // }
 }

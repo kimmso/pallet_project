@@ -30,12 +30,10 @@ class MyProfilRepository {
     dio.options.headers = {'Authorization': 'Bearer $accessToken'};
 
     final response = await dio.patch(ApiUrls.nicknameUrl, data: json);
-    print(111);
+
     if (response.statusCode == 200) {
       final result = response.data;
-      print(response.data);
-      print(124);
-      print(result);
+
       return result["name"];
     } else {
       Get.snackbar('실패', '실패');

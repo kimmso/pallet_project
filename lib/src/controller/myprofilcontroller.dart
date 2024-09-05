@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:pallet_project/src/binding/init_binding.dart';
-import 'package:pallet_project/src/controller/usercontroller.dart';
+
 import 'package:pallet_project/src/model/myprofil.dart';
-import 'package:pallet_project/src/model/user.dart';
+
 import 'package:pallet_project/src/repository/myprofil_repository.dart';
 import 'package:pallet_project/src/view/login.dart';
-import 'package:pallet_project/src/view/profil.dart';
 
 class MyProfilController extends GetxController {
   final Rxn<MyProfil> _myprofils = Rxn<MyProfil>();
