@@ -25,10 +25,9 @@ class PostListController extends GetxController {
     }
   }
 
-  Future<void> deletefetchData(int post_no) async {
-    print(post_no);
+  Future<void> deletefetchData(int postNo) async {
     try {
-      await repository.deleteApi(post_no);
+      await repository.deleteApi(postNo);
 
       Get.snackbar('삭제 완료', '게시글이 삭제되었습니다.');
     } catch (e) {

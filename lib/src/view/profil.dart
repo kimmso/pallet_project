@@ -7,6 +7,7 @@ import 'package:pallet_project/src/controller/usercontroller.dart';
 import 'package:pallet_project/src/model/feed.dart';
 import 'package:pallet_project/src/model/myprofil.dart';
 import 'package:pallet_project/src/view/info_modify.dart';
+import 'package:pallet_project/src/view/login.dart';
 import 'package:pallet_project/src/view/mydetail.dart';
 
 class Profile extends GetView<MyProfilController> {
@@ -244,7 +245,7 @@ class Profile extends GetView<MyProfilController> {
                       Text('탈퇴하기'),
                     ],
                   ),
-                  onTap: () => {},
+                  onTap: () => _confirmUnregister(context),
                 ),
               ];
             },
@@ -322,6 +323,36 @@ class Profile extends GetView<MyProfilController> {
           ),
         ),
       ),
+    );
+  }
+
+  void _confirmUnregister(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('회원 탈퇴'),
+          content: const Text('정말로 탈퇴하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('아니요'),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+            TextButton(
+              child: const Text('예'),
+              onPressed: () {
+                Get.back();
+                {
+                  Get.find<UserController>().unregisterData();
+                }
+                Get.off(() => LoginPage());
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

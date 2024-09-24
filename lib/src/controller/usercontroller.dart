@@ -145,6 +145,10 @@ class UserController extends GetxController {
     moveToLogin();
   }
 
+  void unregisterData() {
+    repository.unregisterApi();
+  }
+
 // 화면 크기별 위젯 능동적 조정
   late double screenWidth = 0.0;
   late double screenHeight = 0.0;

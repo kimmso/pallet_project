@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:pallet_project/src/controller/detailcontroller.dart';
 
 import 'package:pallet_project/src/model/feeddetail.dart';
-import 'package:pallet_project/src/repository/detail_repository.dart';
 
 class MydetailPage extends GetView<DetailController> {
   final int postNo;

@@ -137,4 +137,33 @@ class UserRepository {
       print('Error occurred: $e');
     }
   }
+
+  Future<void> unregisterApi() async {
+    try {
+      String? accessToken = GetStorage().read('accessToken');
+      dio.options.headers = {'Authorization': 'Bearer $accessToken'};
+
+      final response = await dio.delete(ApiUrls.unregisterUrl);
+
+      if (response.statusCode == 200) {
+        Get.to(() => LoginPage());
+      } else {
+        print("회원탈퇴 실패");
+        Get.snackbar("회원탈퇴 실패", "다시 시도해주세요.");
+        throw Exception("회원탈퇴 중 오류 발생");
+      }
+    } catch (error) {
+      // DioError인 경우
+      if (error is DioError) {
+        // 에러 타입에 따라 처리
+        if (error.response != null) {
+          print('Response error: ${error.response}');
+        } else {
+          print('Connection error: $error');
+        }
+      } else {
+        print('Non-DioError: $error');
+      }
+    }
+  }
 }

@@ -2,16 +2,29 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:pallet_project/src/app.dart';
+import 'package:pallet_project/src/controller/detailcontroller.dart';
 import 'package:pallet_project/src/controller/postcontroller.dart';
 import 'package:pallet_project/src/controller/postlistcontroller.dart';
+
 import 'package:pallet_project/src/model/postlist.dart';
+
 import 'package:pallet_project/src/repository/post_repository.dart';
 import 'package:pallet_project/src/view/update.dart';
 
 class MyPage extends GetView<PostListController> {
   final DateTime selectedDate;
 
-  const MyPage({Key? key, required this.selectedDate}) : super(key: key);
+  MyPage({Key? key, required this.selectedDate}) : super(key: key);
+
+  final DetailController detailcontroller = Get.find<DetailController>();
+
+  toggleLike() {
+    if (detailcontroller.isLiked.value) {
+      detailcontroller.minuslikefetchData(detailcontroller.postNo.value);
+    } else {
+      detailcontroller.pluslikefetchData(detailcontroller.postNo.value);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,17 +87,30 @@ class MyPage extends GetView<PostListController> {
           children: [
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Obx(() {
+                    bool isLiked = detailcontroller.isLiked.value;
+                    return IconButton(
+                      icon: Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: isLiked ? Colors.red : null,
+                      ),
+                      onPressed: toggleLike,
+                    );
+                  }),
                 ),
-                Text(
-                  "${postlist.like_count ?? 0}", // 좋아요 개수 표시
-                  style: const TextStyle(fontSize: 16),
-                ),
+                Obx(() {
+                  int likeCount = detailcontroller.like_count.value;
+                  return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '$likeCount', // 좋아요 개수 표시
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ]);
+                })
               ],
             ),
             _menuIcon(

@@ -9,6 +9,7 @@ class DetailController extends GetxController {
 
   var isLiked = false.obs;
   var like_count = 0.obs;
+  var postNo = 0.obs;
 
   final DetailRepository repository;
   DetailController({
@@ -19,15 +20,12 @@ class DetailController extends GetxController {
   Future<FeedDetail?> detailfetchData(int postNo) async {
     final feeddetail = await repository.detailApi(postNo);
 
-    print("실행");
-
     if (feeddetail != null) {
       _feeddetails.value = feeddetail;
       isLiked.value = feeddetail.like ?? false; // 데이터를 기반으로 isLiked 설정
-      print(1111);
-      print(isLiked.value);
+
       like_count.value = feeddetail.like_count ?? 0; // 데이터에 기반하여 좋아요 카운트 설정
-      print("잘 전달됨");
+
       return feeddetail;
     } else {
       return null;
