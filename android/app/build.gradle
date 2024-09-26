@@ -26,7 +26,7 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.example.pallet_project"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -55,4 +55,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation 'com.google.android.material:material:1.8.0'  // Material Components 라이브러리 추가
+    // 다른 종속성들...
 }
