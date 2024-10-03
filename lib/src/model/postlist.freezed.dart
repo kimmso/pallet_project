@@ -24,6 +24,7 @@ mixin _$PostList {
   String? get photo_url => throw _privateConstructorUsedError;
   int? get post_no => throw _privateConstructorUsedError;
   int? get like_count => throw _privateConstructorUsedError;
+  bool? get like => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +38,11 @@ abstract class $PostListCopyWith<$Res> {
       _$PostListCopyWithImpl<$Res, PostList>;
   @useResult
   $Res call(
-      {String? content, String? photo_url, int? post_no, int? like_count});
+      {String? content,
+      String? photo_url,
+      int? post_no,
+      int? like_count,
+      bool? like});
 }
 
 /// @nodoc
@@ -57,6 +62,7 @@ class _$PostListCopyWithImpl<$Res, $Val extends PostList>
     Object? photo_url = freezed,
     Object? post_no = freezed,
     Object? like_count = freezed,
+    Object? like = freezed,
   }) {
     return _then(_value.copyWith(
       content: freezed == content
@@ -75,6 +81,10 @@ class _$PostListCopyWithImpl<$Res, $Val extends PostList>
           ? _value.like_count
           : like_count // ignore: cast_nullable_to_non_nullable
               as int?,
+      like: freezed == like
+          ? _value.like
+          : like // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -88,7 +98,11 @@ abstract class _$$PostListImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? content, String? photo_url, int? post_no, int? like_count});
+      {String? content,
+      String? photo_url,
+      int? post_no,
+      int? like_count,
+      bool? like});
 }
 
 /// @nodoc
@@ -106,6 +120,7 @@ class __$$PostListImplCopyWithImpl<$Res>
     Object? photo_url = freezed,
     Object? post_no = freezed,
     Object? like_count = freezed,
+    Object? like = freezed,
   }) {
     return _then(_$PostListImpl(
       content: freezed == content
@@ -124,6 +139,10 @@ class __$$PostListImplCopyWithImpl<$Res>
           ? _value.like_count
           : like_count // ignore: cast_nullable_to_non_nullable
               as int?,
+      like: freezed == like
+          ? _value.like
+          : like // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -135,7 +154,8 @@ class _$PostListImpl implements _PostList {
       {required this.content,
       required this.photo_url,
       required this.post_no,
-      required this.like_count});
+      required this.like_count,
+      required this.like});
 
   factory _$PostListImpl.fromJson(Map<String, dynamic> json) =>
       _$$PostListImplFromJson(json);
@@ -148,10 +168,12 @@ class _$PostListImpl implements _PostList {
   final int? post_no;
   @override
   final int? like_count;
+  @override
+  final bool? like;
 
   @override
   String toString() {
-    return 'PostList(content: $content, photo_url: $photo_url, post_no: $post_no, like_count: $like_count)';
+    return 'PostList(content: $content, photo_url: $photo_url, post_no: $post_no, like_count: $like_count, like: $like)';
   }
 
   @override
@@ -164,13 +186,14 @@ class _$PostListImpl implements _PostList {
                 other.photo_url == photo_url) &&
             (identical(other.post_no, post_no) || other.post_no == post_no) &&
             (identical(other.like_count, like_count) ||
-                other.like_count == like_count));
+                other.like_count == like_count) &&
+            (identical(other.like, like) || other.like == like));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, content, photo_url, post_no, like_count);
+      Object.hash(runtimeType, content, photo_url, post_no, like_count, like);
 
   @JsonKey(ignore: true)
   @override
@@ -191,7 +214,8 @@ abstract class _PostList implements PostList {
       {required final String? content,
       required final String? photo_url,
       required final int? post_no,
-      required final int? like_count}) = _$PostListImpl;
+      required final int? like_count,
+      required final bool? like}) = _$PostListImpl;
 
   factory _PostList.fromJson(Map<String, dynamic> json) =
       _$PostListImpl.fromJson;
@@ -204,6 +228,8 @@ abstract class _PostList implements PostList {
   int? get post_no;
   @override
   int? get like_count;
+  @override
+  bool? get like;
   @override
   @JsonKey(ignore: true)
   _$$PostListImplCopyWith<_$PostListImpl> get copyWith =>

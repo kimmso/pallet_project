@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'post.freezed.dart';
 part 'post.g.dart';
 
-@freezed
+@unfreezed
 class Post with _$Post {
   factory Post({
     required String? content,

@@ -24,13 +24,13 @@ class HomeController extends GetxController {
   RxBool isDateSelected = false.obs;
   Rx<DateTime?> selectedDay = Rx<DateTime?>(null);
   //profile
-  var profileImagePath = ''.obs;
-  Rx<File?> profileSelectedImage = Rx<File?>(null);
-  Rx<File?> selectedImage = Rx<File?>(null);
-  final picker = ImagePicker();
+  // var profileImagePath = ''.obs;
+  // Rx<File?> profileSelectedImage = Rx<File?>(null);
+  // Rx<File?> selectedImage = Rx<File?>(null);
+  // final picker = ImagePicker();
 
   // _profileImage에서 설정되어있는지
-  bool get isProfileImageSet => profileImagePath.value.isNotEmpty;
+  // bool get isProfileImageSet => profileImagePath.value.isNotEmpty;
 
   get content => null;
 
@@ -69,13 +69,13 @@ class HomeController extends GetxController {
   }
 
 //갤러리 이동, 선택
-  Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      profileImagePath.value = pickedFile.path;
-    } else {}
-  }
+  // Future<void> pickImage() async {
+  //   final pickedFile =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     profileImagePath.value = pickedFile.path;
+  //   } else {}
+  // }
 
   void updateSelectedDay(DateTime? selectedDay) {
     this.selectedDay.value = selectedDay;

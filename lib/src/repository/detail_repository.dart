@@ -43,30 +43,29 @@ class DetailRepository {
     return null;
   }
 
-  void likeApi(int postNo) async {
+  Future<bool> likeApi(int postNo) async {
     try {
       dio.options.contentType = 'application/json';
-
       String? accessToken = GetStorage().read('accessToken');
       if (accessToken == null) {
         throw Exception('Access token is missing');
       }
 
       dio.options.headers = {'Authorization': 'Bearer $accessToken'};
-
       String likeUrl = "${ApiUrls.likeUrl}/$postNo";
 
       final response = await dio.post(likeUrl);
 
       if (response.statusCode == 201) {
+        return true; // 성공 시 true 반환
       } else {
         print("Failed to like the post");
         print("Response data: ${response.data}");
-
-        // 예외처리 필요
+        return false; // 실패 시 false 반환
       }
     } catch (error) {
       _handleError(error);
+      return false; // 예외 발생 시 false 반환
     }
   }
 

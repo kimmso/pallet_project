@@ -20,12 +20,16 @@ Feed _$FeedFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Feed {
+// ignore: invalid_annotation_target
   @JsonKey(name: "photo_url")
-  String? get photoUrl => throw _privateConstructorUsedError;
+  String? get photoUrl =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: "photo_url")
-  set photoUrl(String? value) => throw _privateConstructorUsedError;
+  set photoUrl(String? value) =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: "post_no")
-  int? get postNo => throw _privateConstructorUsedError;
+  int? get postNo =>
+      throw _privateConstructorUsedError; // ignore: invalid_annotation_target
   @JsonKey(name: "post_no")
   set postNo(int? value) => throw _privateConstructorUsedError;
 
@@ -121,9 +125,11 @@ class _$FeedImpl implements _Feed {
   factory _$FeedImpl.fromJson(Map<String, dynamic> json) =>
       _$$FeedImplFromJson(json);
 
+// ignore: invalid_annotation_target
   @override
   @JsonKey(name: "photo_url")
   String? photoUrl;
+// ignore: invalid_annotation_target
   @override
   @JsonKey(name: "post_no")
   int? postNo;
@@ -154,14 +160,14 @@ abstract class _Feed implements Feed {
 
   factory _Feed.fromJson(Map<String, dynamic> json) = _$FeedImpl.fromJson;
 
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(name: "photo_url")
-  String? get photoUrl;
+  String? get photoUrl; // ignore: invalid_annotation_target
   @JsonKey(name: "photo_url")
   set photoUrl(String? value);
-  @override
+  @override // ignore: invalid_annotation_target
   @JsonKey(name: "post_no")
-  int? get postNo;
+  int? get postNo; // ignore: invalid_annotation_target
   @JsonKey(name: "post_no")
   set postNo(int? value);
   @override

@@ -1,10 +1,16 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pallet_project/src/controller/calendercontroller.dart';
+import 'package:pallet_project/src/controller/feedcontroller.dart';
 
-enum Page { HOME, SEARCH, UPLOAD }
+import 'package:pallet_project/src/controller/myprofilcontroller.dart';
+
+enum Page { HOME, Feed, Profil }
 
 class BottomNavController extends GetxController {
+  String targetTime = DateFormat('yyyy-MM').format(DateTime.now());
   final RxInt _pageIndex = 0.obs;
 
   final List<int> _history = [0];
@@ -15,8 +21,20 @@ class BottomNavController extends GetxController {
     var page = Page.values[value];
     switch (page) {
       case Page.HOME:
-      case Page.SEARCH:
-      case Page.UPLOAD:
+        CalenderDateController calenderDateController = Get.find();
+        calenderDateController.calenderdateFetchData(targetTime);
+        moveToPage(value);
+        break;
+      case Page.Feed:
+        moveToPage(value);
+
+        // FeedController를 가져와서 새로 데이터를 불러오는 로직 추가
+        FeedController feedController = Get.find();
+        feedController.feedFetchData(); // 데이터를 다시 불러오는 메서드 호출
+        break;
+      case Page.Profil:
+        MyProfilController myProfilController = Get.find();
+        myProfilController.myinfofetchData();
         moveToPage(value);
 
         // UserController controller = Get.find(); // Get.find()로 컨트롤러에 접근

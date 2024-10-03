@@ -1,29 +1,47 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:pallet_project/src/app.dart';
 import 'package:pallet_project/src/controller/detailcontroller.dart';
-import 'package:pallet_project/src/controller/postcontroller.dart';
 import 'package:pallet_project/src/controller/postlistcontroller.dart';
-
 import 'package:pallet_project/src/model/postlist.dart';
-
-import 'package:pallet_project/src/repository/post_repository.dart';
 import 'package:pallet_project/src/view/update.dart';
 
-class MyPage extends GetView<PostListController> {
+class MyPage extends StatefulWidget {
   final DateTime selectedDate;
 
   MyPage({Key? key, required this.selectedDate}) : super(key: key);
 
-  final DetailController detailcontroller = Get.find<DetailController>();
+  @override
+  _MyPageState createState() => _MyPageState();
+}
 
-  toggleLike() {
-    if (detailcontroller.isLiked.value) {
-      detailcontroller.minuslikefetchData(detailcontroller.postNo.value);
+class _MyPageState extends State<MyPage> {
+  final DetailController detailController = Get.find<DetailController>();
+  late PostListController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<PostListController>();
+    String targetTime =
+        "${widget.selectedDate.year}-${widget.selectedDate.month.toString().padLeft(2, '0')}-${widget.selectedDate.day.toString().padLeft(2, '0')}";
+    // 데이터를 가져오기 위해 Controller의 메소드를 호출
+    controller.postlistFetchData(targetTime);
+  }
+
+  void toggleLike(PostList postList) {
+    if (postList.like != true) {
+      print("Liking Post No: ${postList.post_no}");
+      detailController.pluslikefetchData(); // 좋아요 추가
     } else {
-      detailcontroller.pluslikefetchData(detailcontroller.postNo.value);
+      detailController.minuslikefetchData(); // 좋아요 제거
     }
+
+    // UI 업데이트
+    setState(() {
+      // postList.like = !postList.like!; // 좋아요 상태 토글
+      // postList.like_count = postList.like! ? postList.like_count + 1 : postList.like_count - 1; // 좋아요 수 업데이트
+    });
   }
 
   @override
@@ -32,12 +50,9 @@ class MyPage extends GetView<PostListController> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          '${selectedDate.year}년 ${selectedDate.month}월 ${selectedDate.day}일',
-        ),
+            '${widget.selectedDate.year}년 ${widget.selectedDate.month}월 ${widget.selectedDate.day}일'),
         leading: IconButton(
-          onPressed: () {
-            Get.back(); // 뒤로 가기 버튼을 누르면 이전 화면으로 이동합니다.
-          },
+          onPressed: () => Get.back(),
           icon: const Icon(Icons.arrow_back),
         ),
       ),
@@ -46,39 +61,24 @@ class MyPage extends GetView<PostListController> {
   }
 
   Widget _body() {
-    String targetTime =
-        "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-    return FutureBuilder(
-      future: controller.postlistFetchData(targetTime),
-      builder: (context, AsyncSnapshot<List<PostList>?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return const Center(
-            child: Text('데이터를 불러오는 중 오류가 발생했습니다.'),
-          );
-        } else {
-          List<PostList>? postList = snapshot.data;
-          if (postList == null || postList.isEmpty) {
-            return const Center(
-              child: Text('데이터 없음'),
-            );
-          }
-          return ListView.builder(
-            itemCount: postList.length,
-            itemBuilder: (context, index) {
-              PostList postlist = postList[index];
-              return _buildPostItem(postlist);
-            },
-          );
-        }
-      },
-    );
+    return Obx(() {
+      // 리스트가 비어 있는 경우 처리
+      if (controller.postlists.isEmpty) {
+        return const Center(child: Text('데이터 없음'));
+      }
+
+      // 데이터가 있을 경우 ListView를 반환
+      return ListView.builder(
+        itemCount: controller.postlists.length,
+        itemBuilder: (context, index) {
+          PostList postList = controller.postlists[index];
+          return _buildPostItem(postList);
+        },
+      );
+    });
   }
 
-  Widget _buildPostItem(PostList postlist) {
+  Widget _buildPostItem(PostList postList) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -89,28 +89,26 @@ class MyPage extends GetView<PostListController> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Obx(() {
-                    bool isLiked = detailcontroller.isLiked.value;
-                    return IconButton(
-                      icon: Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.red : null,
-                      ),
-                      onPressed: toggleLike,
-                    );
-                  }),
+                  child: IconButton(
+                    icon: Icon(
+                      postList.like != true
+                          ? Icons.favorite_border
+                          : Icons.favorite,
+                      color: postList.like == true ? Colors.red : null,
+                    ),
+                    onPressed: () {
+                      if (postList.post_no != null) {
+                        toggleLike(postList);
+                      } else {
+                        print('Post number is null');
+                      }
+                    },
+                  ),
                 ),
-                Obx(() {
-                  int likeCount = detailcontroller.like_count.value;
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '$likeCount', // 좋아요 개수 표시
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ]);
-                })
+                Text(
+                  '${postList.like_count}',
+                  style: const TextStyle(fontSize: 16),
+                ),
               ],
             ),
             _menuIcon(
@@ -118,37 +116,31 @@ class MyPage extends GetView<PostListController> {
               onEdit: () {
                 Get.to(
                   () => UpdatePage(
-                    photo_url: postlist.photo_url,
-                    content: postlist.content,
-                    post_no: postlist.post_no,
+                    photo_url: postList.photo_url,
+                    content: postList.content,
+                    postNo: postList.post_no,
                   ),
-                  binding: BindingsBuilder(() {
-                    Get.put(PostController(repository: PostRepository()));
-                    PostController.to.initTextField(postlist.content!);
-                  }),
                 );
               },
               onDelete: () {
-                _confirmDelete(Get.context!, postlist.post_no!);
+                _confirmDelete(Get.context!, postList.post_no!);
               },
             ),
           ],
         ),
-        // 포스트 이미지 표시
         SizedBox(
-          height: 400,
+          height: 300,
           width: double.infinity,
           child: Image.network(
-            postlist.photo_url ?? '',
+            postList.photo_url ?? '',
             fit: BoxFit.cover,
           ),
         ),
         const SizedBox(height: 20),
-        // 포스트 내용을 코멘트 쓰는 구간에 표시
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
-            postlist.content ?? '', // 포스트 내용
+            postList.content ?? '',
             style: const TextStyle(fontSize: 16),
           ),
         ),
@@ -169,9 +161,7 @@ class MyPage extends GetView<PostListController> {
                 child: const Row(
                   children: [
                     Icon(Icons.edit_outlined),
-                    SizedBox(
-                      width: 8,
-                    ),
+                    SizedBox(width: 8),
                     Text('수정하기'),
                   ],
                 ),
@@ -181,9 +171,7 @@ class MyPage extends GetView<PostListController> {
                 child: const Row(
                   children: [
                     Icon(Icons.delete_outline),
-                    SizedBox(
-                      width: 8,
-                    ),
+                    SizedBox(width: 8),
                     Text('삭제하기'),
                   ],
                 ),
@@ -193,7 +181,7 @@ class MyPage extends GetView<PostListController> {
           },
           icon: const Icon(Icons.more_vert),
           offset: const Offset(0, 50),
-          color: Colors.white, // 메뉴 배경색 변경
+          color: Colors.white,
         ),
       ],
     );

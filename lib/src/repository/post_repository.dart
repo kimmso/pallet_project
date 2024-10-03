@@ -110,9 +110,8 @@ class PostRepository {
     return '${Random().nextInt(900000) + 100000}.jpg';
   }
 
-  Future<Post?> changeimageApi(XFile? file, int post_no) async {
+  Future<Post?> changeimageApi(XFile? file, int postNo) async {
     try {
-      if (file == null) {}
       String? accessToken = GetStorage().read('accessToken');
 
       dio.options.headers = {'Authorization': 'Bearer $accessToken'};
@@ -123,21 +122,25 @@ class PostRepository {
         'file': await MultipartFile.fromFile(file!.path,
             filename: generateRandomFileName())
       });
-      String changeimageUrl = "${ApiUrls.writeUrl}/${post_no}";
+      String changeimageUrl = "${ApiUrls.writeUrl}/${postNo}";
+      print("진짜 1");
+      print(postNo);
       final response = await dio.patch(changeimageUrl, data: formData);
+      print("진짜 2");
 
       if (response.statusCode == 201) {
+        print(response.statusCode);
         return Post.fromJson(response.data);
       } else if (response.statusCode == 400) {
         final errorMessage = response.data['error'];
-        print("글쓰기 실패: $errorMessage");
+        print("수정하기 실패: $errorMessage");
         return null;
       } else {
-        throw Exception("글쓰기 오류");
+        throw Exception("수정하기 오류");
       }
     } catch (e) {
       print("Error in loginApi: $e");
-      throw Exception("글쓰기 중 오류 발생");
+      throw Exception("수정하기 중 오류 발생");
     }
   }
 

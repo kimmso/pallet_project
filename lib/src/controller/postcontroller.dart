@@ -94,28 +94,47 @@ class PostController extends GetxController {
     _content = TextEditingController(text: hint ?? "");
   }
 
-  Future<Post?> changepostfetchData(int post_no) async {
-    final post = await repository.changeimageApi(file, post_no);
+  Future<Post?> changepostfetchData(int postNo, String photo_url) async {
+    print(1);
+
+    // file이 null인 경우, 기존의 photo_url을 반환
+    if (file == null) {
+      // 기존에 가지고 있는 post 데이터의 photo_url을 반환
+      print("??");
+      print(photo_url);
+
+      // Post 생성자를 사용하여 새로운 Post 객체를 만듭니다
+      Post post = Post(
+        content: _content.value.text,
+        photo_url: photo_url,
+        share_check: _share_check.value,
+      );
+
+      return post;
+    }
+
+    final post = await repository.changeimageApi(file, postNo);
+    print(2);
     if (post != null) {
       _posts.value = post;
       return post;
     } else {
       Get.snackbar(
-        "글쓰기 실패",
-        ".",
+        "글 수정하기 실패",
+        "수정 실패",
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 3),
       );
     }
   }
 
-  void changecontentFetchData(post, int post_no) {
+  void changecontentFetchData(post, int postNo) {
     final content = {
       'content': _content.value.text,
       'photo_url': post.photo_url,
       'share_check': _share_check.value == true,
     };
 
-    repository.changecontentApi(content, post_no);
+    repository.changecontentApi(content, postNo);
   }
 }

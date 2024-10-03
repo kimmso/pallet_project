@@ -12,6 +12,7 @@ _$PostListImpl _$$PostListImplFromJson(Map<String, dynamic> json) =>
       photo_url: json['photo_url'] as String?,
       post_no: (json['post_no'] as num?)?.toInt(),
       like_count: (json['like_count'] as num?)?.toInt(),
+      like: json['like'] as bool?,
     );
 
 Map<String, dynamic> _$$PostListImplToJson(_$PostListImpl instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$$PostListImplToJson(_$PostListImpl instance) =>
       'photo_url': instance.photo_url,
       'post_no': instance.post_no,
       'like_count': instance.like_count,
+      'like': instance.like,
     };

@@ -29,9 +29,9 @@ class MydetailPage extends GetView<DetailController> {
 
   void toggleLike() {
     if (controller.isLiked.value) {
-      controller.minuslikefetchData(postNo);
+      controller.minuslikefetchData();
     } else {
-      controller.pluslikefetchData(postNo);
+      controller.pluslikefetchData();
     }
   }
 

@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:pallet_project/src/controller/feedcontroller.dart';
 import 'package:pallet_project/src/view/detail.dart';
 
-import 'package:pallet_project/src/view/mydetail.dart'; // MydetailPage를 포함시킵니다.
-
 class FeedPage extends GetView<FeedController> {
   const FeedPage({super.key});
 

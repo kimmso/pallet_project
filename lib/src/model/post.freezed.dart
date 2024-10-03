@@ -21,8 +21,11 @@ Post _$PostFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Post {
   String? get content => throw _privateConstructorUsedError;
+  set content(String? value) => throw _privateConstructorUsedError;
   String? get photo_url => throw _privateConstructorUsedError;
+  set photo_url(String? value) => throw _privateConstructorUsedError;
   bool? get share_check => throw _privateConstructorUsedError;
+  set share_check(bool? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -124,32 +127,16 @@ class _$PostImpl implements _Post {
       _$$PostImplFromJson(json);
 
   @override
-  final String? content;
+  String? content;
   @override
-  final String? photo_url;
+  String? photo_url;
   @override
-  final bool? share_check;
+  bool? share_check;
 
   @override
   String toString() {
     return 'Post(content: $content, photo_url: $photo_url, share_check: $share_check)';
   }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PostImpl &&
-            (identical(other.content, content) || other.content == content) &&
-            (identical(other.photo_url, photo_url) ||
-                other.photo_url == photo_url) &&
-            (identical(other.share_check, share_check) ||
-                other.share_check == share_check));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, content, photo_url, share_check);
 
   @JsonKey(ignore: true)
   @override
@@ -167,18 +154,21 @@ class _$PostImpl implements _Post {
 
 abstract class _Post implements Post {
   factory _Post(
-      {required final String? content,
-      required final String? photo_url,
-      required final bool? share_check}) = _$PostImpl;
+      {required String? content,
+      required String? photo_url,
+      required bool? share_check}) = _$PostImpl;
 
   factory _Post.fromJson(Map<String, dynamic> json) = _$PostImpl.fromJson;
 
   @override
   String? get content;
+  set content(String? value);
   @override
   String? get photo_url;
+  set photo_url(String? value);
   @override
   bool? get share_check;
+  set share_check(bool? value);
   @override
   @JsonKey(ignore: true)
   _$$PostImplCopyWith<_$PostImpl> get copyWith =>

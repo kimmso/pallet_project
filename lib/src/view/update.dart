@@ -12,9 +12,9 @@ import 'package:pallet_project/src/widget/textfield.dart';
 class UpdatePage extends GetView<PostController> {
   final String? photo_url;
   final String? content;
-  final int? post_no;
+  final int? postNo;
 
-  const UpdatePage({Key? key, this.photo_url, this.content, this.post_no})
+  const UpdatePage({Key? key, this.photo_url, this.content, this.postNo})
       : super(key: key);
 
   @override
@@ -26,10 +26,12 @@ class UpdatePage extends GetView<PostController> {
         actions: [
           IconButton(
               onPressed: () async {
-                Post? post = await controller.changepostfetchData(post_no!);
+                Post? post =
+                    await controller.changepostfetchData(postNo!, photo_url!);
                 print('사진 url 반환 성공');
+                print(post);
 
-                controller.changecontentFetchData(post, post_no!);
+                controller.changecontentFetchData(post, postNo!);
                 Get.to(() => App());
               },
               icon: const Icon(Icons.check))

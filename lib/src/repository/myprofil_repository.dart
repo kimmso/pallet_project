@@ -25,21 +25,26 @@ class MyProfilRepository {
   }
 
   Future<String> nicknameApi(Map<String, dynamic> json) async {
-    String? accessToken = GetStorage().read('accessToken');
+    try {
+      String? accessToken = GetStorage().read('accessToken');
 
-    dio.options.headers = {'Authorization': 'Bearer $accessToken'};
+      dio.options.headers = {'Authorization': 'Bearer $accessToken'};
 
-    final response = await dio.patch(ApiUrls.nicknameUrl, data: json);
+      final response = await dio.patch(ApiUrls.nicknameUrl, data: json);
 
-    if (response.statusCode == 200) {
-      final result = response.data;
-
-      return result["name"];
-    } else {
-      Get.snackbar('실패', '실패');
-
-      throw Exception();
+      if (response.statusCode == 200) {
+        final result = response.data;
+        return result["name"];
+      } else {
+        // 상태 코드가 200이 아닌 경우
+        Get.snackbar('실패', '이름이 중복되었습니다.');
+      }
+    } catch (e) {
+      // 예외가 발생한 경우
+      Get.snackbar('실패했습니다.', '이름이 중복되었습니다.');
     }
+
+    throw Exception('nicknameApi 실패');
   }
 
   Future<void> passwordApi(Map<String, dynamic> json) async {
